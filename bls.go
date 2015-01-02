@@ -1,4 +1,4 @@
-package main
+package bls
 
 import (
         // "bytes"
@@ -7,11 +7,9 @@ import (
         "net/http"
 )
 
-func main() {
-        series := "LAUCN040010000000005"
+// example series "LAUCN040010000000005"
+func SingleSeries(series string) string {
         url := "http://api.bls.gov/publicAPI/v2/timeseries/data/"
-        fmt.Println("URL:>", url)
-
         // var jsonStr = []byte(`{"seriesid": ['CUUR0000SA0','SUUR0000SA0'],"startyear":"2011", "endyear":"2014"}`)
         req, err := http.NewRequest("POST", url+series, nil)
         req.Header.Set("Content-Type", "application/json")
@@ -25,6 +23,8 @@ func main() {
         fmt.Println("response Headers:", resp.Header)
         body, _ := ioutil.ReadAll(resp.Body)
         fmt.Println("response Body:", string(body))
+        
+        return string(body)
 }
 
 func check (err error) {
