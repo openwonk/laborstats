@@ -18,13 +18,18 @@ func main() {
 
         client := &http.Client{}
         resp, err := client.Do(req)
-        if err != nil {
-                panic(err)
-        }
+        check(err)
         defer resp.Body.Close()
 
         fmt.Println("response Status:", resp.Status)
         fmt.Println("response Headers:", resp.Header)
         body, _ := ioutil.ReadAll(resp.Body)
         fmt.Println("response Body:", string(body))
+}
+
+func check (err error) {
+        if err != nil {
+                panic(err)
+        }               
+        
 }
