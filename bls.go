@@ -8,9 +8,15 @@ import (
 	"strings"
 )
 
-func SingleSeries(series string) string {
+type Request struct {
+	RegistrationKey, StartYear, EndYear  string
+	Catalog, Calculations, AnnualAverage bool
+	Series                               []string
+}
+
+func (r *Request) SingleSeries(series int) string {
 	url := "http://api.bls.gov/publicAPI/v2/timeseries/data/"
-	req, err := http.NewRequest("POST", url+series, nil)
+	req, err := http.NewRequest("POST", url+r.Series[series], nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -26,10 +32,16 @@ func SingleSeries(series string) string {
 	return string(body)
 }
 
-// "LAUCN040010000000005", "LAUCN040010000000006"
-func MultipleSeries(series ...string) {
-	s := "\"" + strings.Join(series, "\",\"") + "\""
-	payload := `{"seriesid":[` + s + `]}`
+func (r *Request) MultipleSeries() {
+	// "LAUCN040010000000005", "LAUCN040010000000006"
+	s := "\"" + strings.Join(r.Series, "\",\"") + "\""
+	payload := `{"seriesid":[` + s + `],
+					"startyear":"2010", 
+					"endyear":"2012",
+					"catalog":false,
+					"calculations":true,
+					"annualaverage":true,
+					"registrationKey":"acaf8533b1024e3c827414ff9e01e8f7"}`
 	url := "http://api.bls.gov/publicAPI/v2/timeseries/data/"
 
 	jsonStr := []byte(payload)
