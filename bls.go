@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 func SingleSeries(series string) string {
@@ -25,11 +26,13 @@ func SingleSeries(series string) string {
 	return string(body)
 }
 
-func MutipleSeries(series ...string) {
-	series := `{"seriesid":["LAUCN040010000000005", "LAUCN040010000000006"]}`
+// "LAUCN040010000000005", "LAUCN040010000000006"
+func MultipleSeries(series ...string) {
+	s := "\"" + strings.Join(series, "\",\"") + "\""
+	payload := `{"seriesid":[` + s + `]}`
 	url := "http://api.bls.gov/publicAPI/v2/timeseries/data/"
 
-	jsonStr := []byte(series)
+	jsonStr := []byte(payload)
 	req, err := http.NewRequest("POST", url, bytes.NewReader(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 
