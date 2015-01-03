@@ -2,9 +2,10 @@ package bls
 
 import (
 	"bytes"
-	"fmt"
+	// "fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -14,9 +15,9 @@ type Request struct {
 	Series                               []string
 }
 
-func (r *Request) SingleSeries(series int) string {
+func (r *Request) SingleSeries() string {
 	url := "http://api.bls.gov/publicAPI/v2/timeseries/data/"
-	req, err := http.NewRequest("POST", url+r.Series[series], nil)
+	req, err := http.NewRequest("POST", url+r.Series[0], nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -24,24 +25,20 @@ func (r *Request) SingleSeries(series int) string {
 	check(err)
 	defer resp.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
-
 	return string(body)
 }
 
-func (r *Request) MultipleSeries() {
+func (r *Request) MultipleSeries() string {
 	// "LAUCN040010000000005", "LAUCN040010000000006"
-	s := "\"" + strings.Join(r.Series, "\",\"") + "\""
-	payload := `{"seriesid":[` + s + `],
-					"startyear":"2010", 
-					"endyear":"2012",
-					"catalog":false,
-					"calculations":true,
-					"annualaverage":true,
-					"registrationKey":"acaf8533b1024e3c827414ff9e01e8f7"}`
+	payload := `{
+		"seriesid":[` + "\"" + strings.Join(r.Series, "\",\"") + "\"" + `],
+		"startyear":"` + r.StartYear + `","endyear":"` + r.EndYear + `",
+		"catalog":` + strconv.FormatBool(r.Catalog) + `,
+		"calculations":` + strconv.FormatBool(r.Calculations) + `,
+		"annualaverage":` + strconv.FormatBool(r.AnnualAverage) + `,
+		"registrationKey":"` + r.RegistrationKey + `"}`
+
 	url := "http://api.bls.gov/publicAPI/v2/timeseries/data/"
 
 	jsonStr := []byte(payload)
@@ -53,10 +50,8 @@ func (r *Request) MultipleSeries() {
 	check(err)
 	defer resp.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
+	return string(body)
 }
 
 func check(err error) {
