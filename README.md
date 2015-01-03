@@ -1,6 +1,6 @@
 US BLS API Client
 =======
-Client program that allows one to access domestic labor data and statistics via the [US Bureau of Labor Statistics (BLS)](http://bls.gov).  For better access, be sure to obtain a free [registration key](http://data.bls.gov/registrationEngine/). 
+Client library that facilitates access to domestic labor data and statistics via the [US Bureau of Labor Statistics (BLS)](http://bls.gov).  For better access, be sure to obtain a free [registration key](http://data.bls.gov/registrationEngine/). 
 
 
 ### Usage
