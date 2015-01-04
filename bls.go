@@ -2,6 +2,7 @@ package bls
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -12,13 +13,15 @@ const (
 	url = "http://api.bls.gov/publicAPI/v2/timeseries/data/"
 )
 
+type Response string
+
 type Series struct {
 	RegistrationKey, StartYear, EndYear  string
 	Catalog, Calculations, AnnualAverage bool
 	Series                               []string
 }
 
-func (r *Series) Request() string {
+func (r *Series) Request() Response {
 	// "LAUCN040010000000005", "LAUCN040010000000006"
 	payload := `{
 		"seriesid":[` + "\"" + strings.Join(r.Series, "\",\"") + "\"" + `],
@@ -38,7 +41,13 @@ func (r *Series) Request() string {
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	return string(body)
+	output := Response{string(body)}
+	return output
+}
+
+func (r *Response) Structify() {
+	// TODO: Convert "Response" (aka string) to Go struct
+
 }
 
 func check(err error) {
