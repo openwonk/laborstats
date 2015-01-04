@@ -1,4 +1,4 @@
-US BLS API Client
+BLS API Client
 =======
 Client package that facilitates access to domestic labor data and statistics via the [US Bureau of Labor Statistics (BLS)](http://www.bls.gov/developers/).  For better access, be sure to obtain a free [registration key](http://data.bls.gov/registrationEngine/). 
 
